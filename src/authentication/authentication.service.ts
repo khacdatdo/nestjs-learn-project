@@ -47,10 +47,15 @@ export class AuthenticationService {
 
   async refreshToken(payload: any): Promise<any> {
     const { username, facebookId } = payload;
-    const user = await this.userRepository.findOne({
-      username,
-      facebookId,
-    });
+    const user = await this.userRepository.findOne(
+      {
+        username,
+        facebookId,
+      },
+      {
+        relations: ['role'],
+      },
+    );
     if (!user) throw new UnauthorizedException('Invalid credentials');
     const newPayload = {
       username: user.username,

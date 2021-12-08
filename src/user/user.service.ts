@@ -34,6 +34,14 @@ export class UserService {
     return this.userRepository.save(newUser);
   }
 
+  findByUsername(username: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: {
+        username,
+      },
+    });
+  }
+
   getAll(): Promise<User[]> {
     return this.userRepository.find({
       relations: ['role'],

@@ -8,6 +8,8 @@ import {
   Query,
   UsePipes,
 } from '@nestjs/common';
+import { ROLES } from 'src/common/constants';
+import { Role } from 'src/common/guards/role/role.decorator';
 import { AllValidationPipe } from 'src/common/pipes/validation.pipe';
 import { Confession } from './confession.entity';
 import { ConfessionService } from './confession.service';
@@ -16,11 +18,7 @@ import { FilterDto } from './dto/filter.dto';
 
 @Controller('confessions')
 export class ConfessionController {
-  private readonly confessionService: ConfessionService;
-
-  constructor() {
-    this.confessionService = new ConfessionService();
-  }
+  constructor(private confessionService: ConfessionService) {}
 
   @Post()
   @UsePipes(new AllValidationPipe())
@@ -33,11 +31,18 @@ export class ConfessionController {
     };
   }
 
+  @Role(ROLES.MOD)
   @Get()
   getAllConfessions(@Query() filter: FilterDto): Promise<any> {
-    return this.confessionService.getAll(filter);
+    const defaultFilter = {
+      limit: 20,
+      page: 1,
+      search: '',
+    };
+    return this.confessionService.getAll(Object.assign(defaultFilter, filter));
   }
 
+  @Role(ROLES.MOD)
   @Get(':id')
   getConfession(
     @Param('id', new ParseIntPipe()) id: number,

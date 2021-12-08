@@ -12,7 +12,9 @@ export class Confession {
   })
   time: string;
 
-  @Column()
+  @Column({
+    default: 'SomeOne',
+  })
   sender: string;
 
   @Column()

@@ -1,18 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Like, Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Confession } from './confession.entity';
 import { CreateConfessionDto } from './dto';
 import { FilterDto } from './dto/filter.dto';
 
 @Injectable()
 export class ConfessionService {
-  @InjectRepository(Confession)
-  private readonly confessionRepository: Repository<Confession>;
-
-  constructor() {
-    this.confessionRepository = getRepository(Confession);
-  }
+  constructor(
+    @InjectRepository(Confession)
+    private readonly confessionRepository: Repository<Confession>,
+  ) {}
 
   create(confession: CreateConfessionDto): Promise<Confession> {
     return this.confessionRepository.save(confession);

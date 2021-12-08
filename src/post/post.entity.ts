@@ -13,8 +13,11 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  time: Date;
+  @Column({
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  time: string;
 
   @Column()
   facebookPostId: string;

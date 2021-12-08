@@ -1,12 +1,13 @@
 import { Type } from 'class-transformer';
-import { Length, Min } from 'class-validator';
+import { IsOptional, Length, MinLength } from 'class-validator';
 
 export class CreateConfessionDto {
+  @IsOptional()
   @Type(() => String)
   @Length(5, 200)
   sender: string;
 
   @Type(() => String)
-  @Min(100)
+  @MinLength(100)
   context: string;
 }
