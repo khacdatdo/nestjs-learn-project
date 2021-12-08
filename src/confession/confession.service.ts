@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Like, Repository } from 'typeorm';
 import { Confession } from './confession.entity';
 import { CreateConfessionDto } from './dto';
+import { FilterDto } from './dto/filter.dto';
 
 @Injectable()
 export class ConfessionService {
@@ -17,8 +18,15 @@ export class ConfessionService {
     return this.confessionRepository.save(confession);
   }
 
-  getAll(): Promise<Confession[]> {
-    return this.confessionRepository.find();
+  getAll(filter: FilterDto): Promise<Confession[]> {
+    return this.confessionRepository.find({
+      where: {
+        context: Like(`%${filter.search}%`),
+      },
+      skip: (filter.page - 1) * filter.limit,
+      take: filter.limit,
+      relations: ['post'],
+    });
   }
 
   async getById(id: number): Promise<Confession> {

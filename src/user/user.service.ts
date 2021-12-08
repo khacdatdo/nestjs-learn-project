@@ -4,6 +4,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DEFAULT_ROLE } from 'src/common/constants';
 import { Role } from 'src/role/role.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -28,6 +29,7 @@ export class UserService {
     if (isExist)
       throw new UnprocessableEntityException('Username already exist');
     const newUser = new User();
+    newUser.role = await this.roleRepository.findOne(DEFAULT_ROLE);
     this.userRepository.merge(newUser, user);
     return this.userRepository.save(newUser);
   }

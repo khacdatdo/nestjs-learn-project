@@ -8,10 +8,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { ROLES } from 'src/common/constants';
+import { Role } from 'src/common/guards/role/role.decorator';
 import { CreateUserDto, UpdateUserDto, UpdateUserRoleDto } from './dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
+@Role(ROLES.ADMIN)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

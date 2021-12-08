@@ -1,10 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from 'src/user/user.entity';
-import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from 'src/user/dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -12,28 +10,56 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly userService: UserService,
   ) {}
 
-  async login(username: string, facebookId: string): Promise<string> {
-    const user = await this.userRepository.findOne({
-      username,
-      facebookId,
+  createToken(payload: any): string {
+    return this.jwtService.sign(payload);
+  }
+
+  createRefreshToken(payload: any): string {
+    return this.jwtService.sign(payload, {
+      expiresIn: '7d',
     });
-    if (!user) throw new NotFoundException('Invalid credentials');
+  }
+
+  async login(username: string, facebookId: string): Promise<any> {
+    const user = await this.userRepository.findOne(
+      {
+        username,
+        facebookId,
+      },
+      {
+        relations: ['role'],
+      },
+    );
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
     const payload = {
       username: user.username,
       facebookId: user.facebookId,
       roleId: user.role.id,
     };
-    return this.jwtService.sign(payload);
+    return {
+      accessToken: this.createToken(payload),
+      refreshToken: this.createRefreshToken(payload),
+    };
   }
 
-  async register(user: CreateUserDto): Promise<User> {
-    const isExist = await this.userRepository.findOne({
-      username: user.username,
+  async refreshToken(payload: any): Promise<any> {
+    const { username, facebookId } = payload;
+    const user = await this.userRepository.findOne({
+      username,
+      facebookId,
     });
-    if (isExist) throw new NotFoundException('User already exist');
-    return this.userService.create(user);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+    const newPayload = {
+      username: user.username,
+      facebookId: user.facebookId,
+      roleId: user.role.id,
+    };
+    return {
+      accessToken: this.createToken(newPayload),
+      refreshToken: this.createRefreshToken(newPayload),
+    };
   }
 }

@@ -6,13 +6,18 @@ import { UserModule } from 'src/user/user.module';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
 import { JwtStrategy } from '../common/guards/jwt/jwt.strategy';
+import { ConfigModule } from '@nestjs/config';
+
 @Module({
   imports: [
     UserModule,
     TypeOrmModule.forFeature([User]),
-    JwtModule.register({
-      secret: process.env.JWT_PRIVATE_KEY,
-      signOptions: { expiresIn: '1h' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async () => ({
+        privateKey: process.env.JWT_PRIVATE_KEY || 'private-key',
+        signOptions: { expiresIn: '1h' },
+      }),
     }),
   ],
   controllers: [AuthenticationController],

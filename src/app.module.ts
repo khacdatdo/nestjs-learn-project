@@ -12,6 +12,8 @@ import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { ConfigModule } from '@nestjs/config';
+import { SettingModule } from './setting/setting.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -27,7 +29,6 @@ import { ConfigModule } from '@nestjs/config';
       password: 'admin',
       database: 'nsc',
       entities: [User, Role, Confession, Post, Setting],
-      migrationsRun: true,
       timezone: '+07:00',
       synchronize: true,
     }),
@@ -35,6 +36,8 @@ import { ConfigModule } from '@nestjs/config';
     UserModule,
     ConfessionModule,
     RoleModule,
+    SettingModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

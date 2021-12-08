@@ -9,9 +9,9 @@ export class AllExceptionFilter implements ExceptionFilter {
     const status = exception.status || 500;
     const message = exception.message || 'Something went wrong';
     const error =
-      status === 401
-        ? 'Unauthorized'
-        : exception.response?.error || 'Internal Server Error';
+      (status === 401 && (exception.response?.error || 'Unauthorized')) ||
+      exception.response?.error ||
+      'Internal Server Error';
     const body = {
       status,
       message,

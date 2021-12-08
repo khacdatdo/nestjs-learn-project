@@ -5,10 +5,14 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
+  UsePipes,
 } from '@nestjs/common';
+import { AllValidationPipe } from 'src/common/pipes/validation.pipe';
 import { Confession } from './confession.entity';
 import { ConfessionService } from './confession.service';
 import { CreateConfessionDto } from './dto';
+import { FilterDto } from './dto/filter.dto';
 
 @Controller('confessions')
 export class ConfessionController {
@@ -19,6 +23,7 @@ export class ConfessionController {
   }
 
   @Post()
+  @UsePipes(new AllValidationPipe())
   async createConfession(
     @Body() confession: CreateConfessionDto,
   ): Promise<any> {
@@ -28,10 +33,9 @@ export class ConfessionController {
     };
   }
 
-  // add some filter for searching
   @Get()
-  getAllConfessions(): Promise<any> {
-    return this.confessionService.getAll();
+  getAllConfessions(@Query() filter: FilterDto): Promise<any> {
+    return this.confessionService.getAll(filter);
   }
 
   @Get(':id')

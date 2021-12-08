@@ -1,6 +1,12 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ROLES } from 'src/common/constants';
-import { Role } from '../common/guards/role/role.decorator';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'src/common/guards/jwt/jwt-auth.guard';
 import { AuthenticationService } from './authentication.service';
 import { LoginDto } from './dto/login.dto';
 
@@ -8,20 +14,17 @@ import { LoginDto } from './dto/login.dto';
 export class AuthenticationController {
   constructor(private readonly authService: AuthenticationService) {}
 
-  @Role(ROLES.ADMIN)
-  @Get('test')
-  async hello(): Promise<any> {
-    return {
-      message: 'Hello World',
-    };
+  @Post('login')
+  @HttpCode(200)
+  login(@Body() user: LoginDto): Promise<any> {
+    return this.authService.login(user.username, user.facebookId);
   }
 
-  @Post('login')
-  async login(@Body() user: LoginDto): Promise<any> {
-    const accessToken = await this.authService.login(
-      user.username,
-      user.facebookId,
-    );
-    return { accessToken };
+  @UseGuards(JwtAuthGuard)
+  @Post('refresh-token')
+  @HttpCode(200)
+  refreshToken(@Req() req): Promise<any> {
+    const payload = req.user;
+    return this.authService.refreshToken(payload);
   }
 }

@@ -14,7 +14,6 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.useGlobalFilters(new AllExceptionFilter());
-  app.useGlobalPipes(new AllValidationPipe());
 
   await app.listen(PORT);
 
