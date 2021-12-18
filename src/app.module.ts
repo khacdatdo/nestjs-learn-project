@@ -19,7 +19,7 @@ import { PostModule } from './post/post.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['./.env', './.env.dev'],
+      envFilePath: ['.env', '.env.dev'],
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
