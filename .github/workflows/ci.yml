@@ -7,7 +7,6 @@ on:
 
 jobs:
   deploy:
-    - name: Deploying to server
       runs-on: ubuntu-latest
       steps:
         - name: Connect to server and deploy
