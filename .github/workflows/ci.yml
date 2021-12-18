@@ -1,0 +1,26 @@
+name: NSC Backend CI
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  deploy:
+    - name: Deploying to server
+      runs-on: ubuntu-latest
+      steps:
+        - name: Connect to server and deploy
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USER }}
+            key: ${{ secrets.SSH_KEY }}
+            port: ${{ secrets.PORT }}
+            script: |
+              cd ${{ secrets.PROJECT_PATH }}
+              git pull
+              npm install
+              npm run build
+              pm2 restart ${{ secrets.PROJECT_NAME }}
+            |

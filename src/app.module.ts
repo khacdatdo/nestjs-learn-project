@@ -19,15 +19,15 @@ import { PostModule } from './post/post.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env'],
+      envFilePath: ['.env', '.env.dev'],
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'admin',
-      database: 'nsc',
+      host: process.env.DATABASE_HOST || 'localhost',
+      port: parseInt(process.env.DATABASE_PORT) || 3306,
+      username: process.env.DATABASE_USER || 'root',
+      password: process.env.DATABASE_PASSWORD || 'admin',
+      database: process.env.DATABASE_NAME || 'nsc',
       entities: [User, Role, Confession, Post, Setting],
       timezone: '+07:00',
       synchronize: true,
