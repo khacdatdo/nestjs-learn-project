@@ -21,4 +21,4 @@ jobs:
               git pull
               npm install
               npm run build
-              sudo -u root pm2 reload ${{ secrets.PROJECT_NAME }}
+              sudo pm2 reload ${{ secrets.PROJECT_NAME }}
