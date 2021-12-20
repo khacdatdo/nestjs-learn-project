@@ -17,8 +17,8 @@ jobs:
             key: ${{ secrets.SSH_KEY }}
             port: ${{ secrets.PORT }}
             script: |
-              sudo su
               cd ${{ secrets.PROJECT_PATH }}
+              sudo su
               git pull
               npm install
               npm run build
