@@ -17,8 +17,10 @@ jobs:
             key: ${{ secrets.SSH_KEY }}
             port: ${{ secrets.PORT }}
             script: |
+              sudo su
               cd ${{ secrets.PROJECT_PATH }}
               git pull
               npm install
               npm run build
-              sudo pm2 reload ${{ secrets.PROJECT_NAME }}
+              pm2 reload ${{ secrets.PROJECT_NAME }}
+              exit
