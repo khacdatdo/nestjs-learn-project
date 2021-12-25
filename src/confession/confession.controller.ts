@@ -11,6 +11,7 @@ import {
 import { ROLES } from 'src/common/constants';
 import { Role } from 'src/common/guards/role/role.decorator';
 import { AllValidationPipe } from 'src/common/pipes/validation.pipe';
+import { IsNull, Not } from 'typeorm';
 import { Confession } from './confession.entity';
 import { ConfessionService } from './confession.service';
 import { CreateConfessionDto } from './dto';
@@ -29,6 +30,18 @@ export class ConfessionController {
     return {
       message: 'Confession created successfully',
     };
+  }
+
+  @Get('recently-posted')
+  getRecentlyPostedConfessions(): Promise<Confession[]> {
+    return this.confessionService.find(
+      {
+        post: Not(IsNull()),
+      },
+      {
+        relations: ['post'],
+      },
+    );
   }
 
   @Role(ROLES.MOD)

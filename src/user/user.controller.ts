@@ -29,6 +29,17 @@ export class UserController {
     return this.userService.getAllWithPosts();
   }
 
+  @Get('admin')
+  getAdminsProfile(): Promise<User[]> {
+    return this.userService.find(
+      {},
+      {
+        relations: ['role'],
+        select: ['username', 'avtUrl', 'displayName', 'quote'],
+      },
+    );
+  }
+
   @Get(':id')
   getUserById(@Param('id', new ParseIntPipe()) id: number): Promise<User> {
     return this.userService.getById(id);

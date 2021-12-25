@@ -6,7 +6,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DEFAULT_ROLE } from 'src/common/constants';
 import { Role } from 'src/role/role.entity';
-import { Repository } from 'typeorm';
+import {
+  FindConditions,
+  FindManyOptions,
+  FindOneOptions,
+  Repository,
+} from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
@@ -32,6 +37,22 @@ export class UserService {
     newUser.role = await this.roleRepository.findOne(DEFAULT_ROLE);
     this.userRepository.merge(newUser, user);
     return this.userRepository.save(newUser);
+  }
+
+  find(
+    conditions: FindConditions<User>,
+    options?: FindManyOptions<User>,
+  ): Promise<User[]> {
+    return this.userRepository.find({
+      where: conditions,
+      ...options,
+    });
+  }
+
+  findOne(id?: number, options?: FindOneOptions<User>): Promise<User>;
+  findOne(options: FindOneOptions<User>): Promise<User>;
+  findOne(...args: any[]): Promise<User> {
+    return this.userRepository.findOne(...args);
   }
 
   findByUsername(username: string): Promise<User> {

@@ -1,14 +1,6 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
-import { JwtAuthGuard } from 'src/common/guards/jwt/jwt-auth.guard';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
-import { LoginDto } from './dto/login.dto';
+import { LoginDto, RefreshTokenDto } from './dto';
 
 @Controller('auth')
 export class AuthenticationController {
@@ -20,11 +12,9 @@ export class AuthenticationController {
     return this.authService.login(user.username, user.facebookId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('refresh-token')
   @HttpCode(200)
-  refreshToken(@Req() req): Promise<any> {
-    const payload = req.user;
-    return this.authService.refreshToken(payload);
+  refreshToken(@Body() body: RefreshTokenDto): Promise<any> {
+    return this.authService.refreshToken(body.refreshToken);
   }
 }

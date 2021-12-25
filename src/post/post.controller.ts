@@ -23,7 +23,7 @@ export class PostController {
     private readonly userService: UserService,
   ) {}
 
-  @Role(ROLES.ADMIN)
+  @Role(ROLES.MOD)
   @Get()
   getAll(): Promise<P[]> {
     return this.postService.findAll();

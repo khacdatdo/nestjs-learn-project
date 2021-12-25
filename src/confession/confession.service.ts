@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { FindConditions, FindManyOptions, Like, Repository } from 'typeorm';
 import { Confession } from './confession.entity';
 import { CreateConfessionDto } from './dto';
 import { FilterDto } from './dto/filter.dto';
@@ -14,6 +14,16 @@ export class ConfessionService {
 
   create(confession: CreateConfessionDto): Promise<Confession> {
     return this.confessionRepository.save(confession);
+  }
+
+  find(
+    conditions: FindConditions<Confession>,
+    options?: FindManyOptions<Confession>,
+  ): Promise<Confession[]> {
+    return this.confessionRepository.find({
+      where: conditions,
+      ...options,
+    });
   }
 
   getAll(filter: FilterDto): Promise<Confession[]> {
