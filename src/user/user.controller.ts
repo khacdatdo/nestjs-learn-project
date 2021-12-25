@@ -14,11 +14,11 @@ import { CreateUserDto, UpdateUserDto, UpdateUserRoleDto } from './dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
-@Role(ROLES.ADMIN)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Role(ROLES.ADMIN)
   @Get()
   getAllUsers(): Promise<User[]> {
     return this.userService.getAll();

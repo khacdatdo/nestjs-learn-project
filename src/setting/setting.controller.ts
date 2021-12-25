@@ -28,7 +28,7 @@ export class SettingController {
     };
   }
 
-  @Role(ROLES.ADMIN)
+  @Role(ROLES.MOD)
   @Get()
   getAll(): Promise<Setting[]> {
     return this.settingService.findAll();
